@@ -4,6 +4,7 @@
  */
 package todolist;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -24,6 +25,8 @@ import javafx.scene.layout.VBox;
  * @author christian
  */
 public class FXMLTodoController implements Initializable {
+
+    private String url = "http://localhost:3000/turmas/";
 
     @FXML
     private Button btAdicionarTarefa;
@@ -77,8 +80,24 @@ public class FXMLTodoController implements Initializable {
         alert.show();
     }
 
+    public void carregarTarefas() {
+        RequestsHTTP request = new RequestsHTTP();
+
+        String jsonResponse = request.getRequest(url); // Chama o método que faz a requisição e devolve o JSON
+
+        System.out.println(jsonResponse);
+        
+        String[] jsonResponseSplit = jsonResponse.split(",");
+        for (int i = 0; i < jsonResponseSplit.length; i++) {
+            System.out.println(jsonResponseSplit[i]);
+        }
+
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         carregarPrioridades();
+        carregarTarefas();
     }
+
 }
