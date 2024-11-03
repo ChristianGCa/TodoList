@@ -83,7 +83,7 @@
          </children>
       </GridPane>
       <Button fx:id="btAdicionarTarefa" mnemonicParsing="false" onAction="#adicionarTarefa" text="Adicionar Tarefa" />
-      <VBox fx:id="vboxTarefas" prefHeight="356.0" prefWidth="763.0">
+      <VBox fx:id="vboxTarefas" prefHeight="356.0" prefWidth="763.0" spacing="20.0">
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </padding>

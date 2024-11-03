@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
@@ -23,7 +24,7 @@ import javafx.scene.layout.VBox;
  * @author christian
  */
 public class FXMLTodoController implements Initializable {
-    
+
     @FXML
     private Button btAdicionarTarefa;
 
@@ -32,46 +33,52 @@ public class FXMLTodoController implements Initializable {
 
     @FXML
     private TextField tfTarefa;
-    
+
     @FXML
     private VBox vboxTarefas;
 
     @FXML
     void adicionarTarefa(ActionEvent event) {
-        
+
         String descricaoTarefa = tfTarefa.getText();
         String prioridadeSelecionada = cbPrioridade.getValue();
-        
+
         if (descricaoTarefa != null && prioridadeSelecionada != null) {
-            
+
             Label novaTarefa = new Label("[!]: " + descricaoTarefa + " - Prioridade: " + prioridadeSelecionada);
             novaTarefa.setStyle("-fx-font-size: 16px;");
             vboxTarefas.getChildren().add(novaTarefa);
-            
+
+            Button btnExcluir = new Button("Excluir");
+            btnExcluir.setOnAction(e -> vboxTarefas.getChildren().remove(novaTarefa.getParent())); // Remove o HBox da tarefa
+
+            HBox tarefaBox = new HBox(10, novaTarefa, btnExcluir); // 10 é o espaçamento entre o label e o botão
+            vboxTarefas.getChildren().add(tarefaBox); // Adiciona o HBox ao VBox
+
             tfTarefa.clear();
             cbPrioridade.getSelectionModel().clearSelection();
-            
-        }else {
-            
+
+        } else {
+
             abrirAlert();
-            
+
         }
     }
-    
+
     void carregarPrioridades() {
         ObservableList<String> prioridades = FXCollections.observableArrayList("Alta", "Média", "Baixa");
-        cbPrioridade.setItems(prioridades); 
+        cbPrioridade.setItems(prioridades);
     }
-    
+
     public void abrirAlert() {
-        Alert alert = new Alert(Alert.AlertType.WARNING); // WARNING, CONFIRMATION, INFORMATION, NONE
+        Alert alert = new Alert(Alert.AlertType.ERROR); // WARNING, CONFIRMATION, INFORMATION, NONE
         alert.setTitle("Aviso");
         alert.setContentText("Certifique-se de preencher o campo de Tarefa e selecionar uma prioridade");
         alert.show();
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         carregarPrioridades();
-    }    
+    }
 }
