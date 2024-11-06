@@ -50,4 +50,12 @@
     nbproject/build-impl.xml and nbproject/jfx-impl.xml.
 
     -->
+    
+    <path id="classpath">
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+
 </project>

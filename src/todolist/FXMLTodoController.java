@@ -4,7 +4,6 @@
  */
 package todolist;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -19,6 +18,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -26,7 +27,7 @@ import javafx.scene.layout.VBox;
  */
 public class FXMLTodoController implements Initializable {
 
-    private String url = "http://localhost:3000/turmas/";
+    private String url = "http://localhost:3000/tarefas/";
 
     @FXML
     private Button btAdicionarTarefa;
@@ -46,26 +47,10 @@ public class FXMLTodoController implements Initializable {
         String descricaoTarefa = tfTarefa.getText();
         String prioridadeSelecionada = cbPrioridade.getValue();
 
-        if (descricaoTarefa != null && prioridadeSelecionada != null) {
+        criarTarefa(descricaoTarefa, prioridadeSelecionada);
 
-            Label novaTarefa = new Label("[!]: " + descricaoTarefa + " - Prioridade: " + prioridadeSelecionada);
-            novaTarefa.setStyle("-fx-font-size: 16px;");
-            vboxTarefas.getChildren().add(novaTarefa);
-
-            Button btnExcluir = new Button("Excluir");
-            btnExcluir.setOnAction(e -> vboxTarefas.getChildren().remove(novaTarefa.getParent())); // Remove o HBox da tarefa
-
-            HBox tarefaBox = new HBox(10, novaTarefa, btnExcluir); // 10 é o espaçamento entre o label e o botão
-            vboxTarefas.getChildren().add(tarefaBox); // Adiciona o HBox ao VBox
-
-            tfTarefa.clear();
-            cbPrioridade.getSelectionModel().clearSelection();
-
-        } else {
-
-            abrirAlert();
-
-        }
+        tfTarefa.clear();
+        cbPrioridade.getSelectionModel().clearSelection();
     }
 
     void carregarPrioridades() {
@@ -82,16 +67,36 @@ public class FXMLTodoController implements Initializable {
 
     public void carregarTarefas() {
         RequestsHTTP request = new RequestsHTTP();
-
         String jsonResponse = request.getRequest(url); // Chama o método que faz a requisição e devolve o JSON
 
-        System.out.println(jsonResponse);
+        JSONArray jsonArray = new JSONArray(jsonResponse);
         
-        String[] jsonResponseSplit = jsonResponse.split(",");
-        for (int i = 0; i < jsonResponseSplit.length; i++) {
-            System.out.println(jsonResponseSplit[i]);
-        }
+         for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject item = jsonArray.getJSONObject(i);
+            String tarefa = item.getString("tarefa");
+            String prioridade = item.getString("prioridade");
+            
+             criarTarefa(tarefa, prioridade);
+         }
+    }
+    
+    public void criarTarefa(String tarefa, String prioridade) {
+        
+        if (tarefa == null || tarefa.trim().isEmpty() || prioridade == null || prioridade.trim().isEmpty()) {
+            
+                abrirAlert(); 
+                
+        } else {
+             Label novaTarefa = new Label("--> : " + tarefa + " - Prioridade: " + prioridade);
+                novaTarefa.setStyle("-fx-font-size: 16px;");
+                vboxTarefas.getChildren().add(novaTarefa);
 
+                Button btnExcluir = new Button("Excluir");
+                btnExcluir.setOnAction(e -> vboxTarefas.getChildren().remove(novaTarefa.getParent())); // Remove o HBox da tarefa
+
+                HBox tarefaBox = new HBox(10, novaTarefa, btnExcluir); // 10 é o espaçamento entre o label e o botão
+                vboxTarefas.getChildren().add(tarefaBox); // Adiciona o HBox ao VBox
+        }
     }
 
     @Override

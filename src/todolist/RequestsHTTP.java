@@ -21,9 +21,6 @@ public class RequestsHTTP {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-
-
-
             return response.body();
             
         } catch (Exception e) {
