@@ -87,7 +87,7 @@ public class FXMLTodoController implements Initializable {
                 abrirAlert(); 
                 
         } else {
-             Label novaTarefa = new Label("--> : " + tarefa + " - Prioridade: " + prioridade);
+             Label novaTarefa = new Label("--> " + tarefa + " - Prioridade: " + prioridade);
                 novaTarefa.setStyle("-fx-font-size: 16px;");
                 vboxTarefas.getChildren().add(novaTarefa);
 
